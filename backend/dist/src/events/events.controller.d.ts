@@ -123,8 +123,8 @@ export declare class EventsController {
                 quantity: number;
                 notes: string | null;
                 equipmentId: string;
-                checkOutTransactionId: string;
                 condition: string | null;
+                checkOutTransactionId: string;
             })[];
             checkedOutByUser: {
                 id: string;
@@ -136,8 +136,8 @@ export declare class EventsController {
             createdAt: Date;
             notes: string | null;
             eventId: string;
-            checkedOutBy: string;
             checkedOutAt: Date;
+            checkedOutBy: string;
         })[];
         checkIns: ({
             items: ({
@@ -150,10 +150,10 @@ export declare class EventsController {
                 quantity: number;
                 equipmentId: string;
                 condition: import("@prisma/client").$Enums.ItemCondition;
-                checkInTransactionId: string;
                 returnedQuantity: number;
                 damageNotes: string | null;
                 isShortage: boolean;
+                checkInTransactionId: string;
             })[];
             checkedInByUser: {
                 id: string;
@@ -165,9 +165,9 @@ export declare class EventsController {
             createdAt: Date;
             notes: string | null;
             eventId: string;
-            checkedInBy: string;
             checkedInAt: Date;
             isReconciled: boolean;
+            checkedInBy: string;
         })[];
         quotes: {
             id: string;
@@ -180,10 +180,10 @@ export declare class EventsController {
             quoteNumber: string;
             issueDate: Date;
             validUntil: Date;
-            subtotal: import("@prisma/client-runtime-utils").Decimal;
-            taxAmount: import("@prisma/client-runtime-utils").Decimal;
-            discount: import("@prisma/client-runtime-utils").Decimal;
-            total: import("@prisma/client-runtime-utils").Decimal;
+            subtotal: import("@prisma/client/runtime/library").Decimal;
+            taxAmount: import("@prisma/client/runtime/library").Decimal;
+            discount: import("@prisma/client/runtime/library").Decimal;
+            total: import("@prisma/client/runtime/library").Decimal;
             terms: string | null;
             pdfUrl: string | null;
             createdById: string;
@@ -197,16 +197,16 @@ export declare class EventsController {
             clientId: string;
             eventId: string | null;
             issueDate: Date;
-            subtotal: import("@prisma/client-runtime-utils").Decimal;
-            taxAmount: import("@prisma/client-runtime-utils").Decimal;
-            discount: import("@prisma/client-runtime-utils").Decimal;
-            total: import("@prisma/client-runtime-utils").Decimal;
+            subtotal: import("@prisma/client/runtime/library").Decimal;
+            taxAmount: import("@prisma/client/runtime/library").Decimal;
+            discount: import("@prisma/client/runtime/library").Decimal;
+            total: import("@prisma/client/runtime/library").Decimal;
             terms: string | null;
             pdfUrl: string | null;
             createdById: string;
             invoiceNumber: string;
             dueDate: Date;
-            amountPaid: import("@prisma/client-runtime-utils").Decimal;
+            amountPaid: import("@prisma/client/runtime/library").Decimal;
         }[];
         client: {
             id: string;
@@ -242,7 +242,7 @@ export declare class EventsController {
                 serialNumber: string | null;
                 barcode: string | null;
                 purchaseDate: Date | null;
-                purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+                purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
                 currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
                 quantity: number;
                 unit: string;
@@ -334,7 +334,7 @@ export declare class EventsController {
             serialNumber: string | null;
             barcode: string | null;
             purchaseDate: Date | null;
-            purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+            purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
             currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
             quantity: number;
             unit: string;

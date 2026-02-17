@@ -29,7 +29,7 @@ export declare class TransactionsService {
                     serialNumber: string | null;
                     barcode: string | null;
                     purchaseDate: Date | null;
-                    purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+                    purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
                     currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
                     quantity: number;
                     unit: string;
@@ -42,8 +42,8 @@ export declare class TransactionsService {
                 quantity: number;
                 notes: string | null;
                 equipmentId: string;
-                checkOutTransactionId: string;
                 condition: string | null;
+                checkOutTransactionId: string;
             })[];
             event: {
                 id: string;
@@ -60,8 +60,8 @@ export declare class TransactionsService {
             createdAt: Date;
             notes: string | null;
             eventId: string;
-            checkedOutBy: string;
             checkedOutAt: Date;
+            checkedOutBy: string;
         };
         totalItems: number;
     }>;
@@ -89,7 +89,7 @@ export declare class TransactionsService {
                     serialNumber: string | null;
                     barcode: string | null;
                     purchaseDate: Date | null;
-                    purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+                    purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
                     currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
                     quantity: number;
                     unit: string;
@@ -102,10 +102,10 @@ export declare class TransactionsService {
                 quantity: number;
                 equipmentId: string;
                 condition: import("@prisma/client").$Enums.ItemCondition;
-                checkInTransactionId: string;
                 returnedQuantity: number;
                 damageNotes: string | null;
                 isShortage: boolean;
+                checkInTransactionId: string;
             })[];
             event: {
                 id: string;
@@ -122,9 +122,9 @@ export declare class TransactionsService {
             createdAt: Date;
             notes: string | null;
             eventId: string;
-            checkedInBy: string;
             checkedInAt: Date;
             isReconciled: boolean;
+            checkedInBy: string;
         };
         totalItems: number;
         itemsWithIssues: number;
@@ -155,7 +155,7 @@ export declare class TransactionsService {
                     serialNumber: string | null;
                     barcode: string | null;
                     purchaseDate: Date | null;
-                    purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+                    purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
                     currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
                     quantity: number;
                     unit: string;
@@ -168,8 +168,8 @@ export declare class TransactionsService {
                 quantity: number;
                 notes: string | null;
                 equipmentId: string;
-                checkOutTransactionId: string;
                 condition: string | null;
+                checkOutTransactionId: string;
             })[];
             checkedOutByUser: {
                 id: string;
@@ -182,8 +182,8 @@ export declare class TransactionsService {
             createdAt: Date;
             notes: string | null;
             eventId: string;
-            checkedOutBy: string;
             checkedOutAt: Date;
+            checkedOutBy: string;
         })[];
         checkIns: ({
             items: ({
@@ -204,7 +204,7 @@ export declare class TransactionsService {
                     serialNumber: string | null;
                     barcode: string | null;
                     purchaseDate: Date | null;
-                    purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+                    purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
                     currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
                     quantity: number;
                     unit: string;
@@ -217,10 +217,10 @@ export declare class TransactionsService {
                 quantity: number;
                 equipmentId: string;
                 condition: import("@prisma/client").$Enums.ItemCondition;
-                checkInTransactionId: string;
                 returnedQuantity: number;
                 damageNotes: string | null;
                 isShortage: boolean;
+                checkInTransactionId: string;
             })[];
             checkedInByUser: {
                 id: string;
@@ -233,9 +233,9 @@ export declare class TransactionsService {
             createdAt: Date;
             notes: string | null;
             eventId: string;
-            checkedInBy: string;
             checkedInAt: Date;
             isReconciled: boolean;
+            checkedInBy: string;
         })[];
         summary: {
             totalBooked: number;
@@ -264,7 +264,7 @@ export declare class TransactionsService {
             serialNumber: string | null;
             barcode: string | null;
             purchaseDate: Date | null;
-            purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+            purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
             currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
             quantity: number;
             unit: string;
@@ -291,16 +291,16 @@ export declare class TransactionsService {
                 createdAt: Date;
                 notes: string | null;
                 eventId: string;
-                checkedOutBy: string;
                 checkedOutAt: Date;
+                checkedOutBy: string;
             };
         } & {
             id: string;
             quantity: number;
             notes: string | null;
             equipmentId: string;
-            checkOutTransactionId: string;
             condition: string | null;
+            checkOutTransactionId: string;
         })[];
         checkInHistory: ({
             checkInTransaction: {
@@ -321,19 +321,19 @@ export declare class TransactionsService {
                 createdAt: Date;
                 notes: string | null;
                 eventId: string;
-                checkedInBy: string;
                 checkedInAt: Date;
                 isReconciled: boolean;
+                checkedInBy: string;
             };
         } & {
             id: string;
             quantity: number;
             equipmentId: string;
             condition: import("@prisma/client").$Enums.ItemCondition;
-            checkInTransactionId: string;
             returnedQuantity: number;
             damageNotes: string | null;
             isShortage: boolean;
+            checkInTransactionId: string;
         })[];
         skip: number;
         take: number;
@@ -373,7 +373,7 @@ export declare class TransactionsService {
                 serialNumber: string | null;
                 barcode: string | null;
                 purchaseDate: Date | null;
-                purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+                purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
                 currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
                 quantity: number;
                 unit: string;

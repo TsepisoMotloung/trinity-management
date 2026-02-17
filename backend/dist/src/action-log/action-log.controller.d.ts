@@ -17,7 +17,7 @@ export declare class ActionLogController {
             action: string;
             entityType: string;
             entityId: string | null;
-            details: import("@prisma/client/runtime/client").JsonValue | null;
+            details: import("@prisma/client/runtime/library").JsonValue | null;
             ipAddress: string | null;
             userAgent: string | null;
         })[];
@@ -39,7 +39,7 @@ export declare class ActionLogController {
         action: string;
         entityType: string;
         entityId: string | null;
-        details: import("@prisma/client/runtime/client").JsonValue | null;
+        details: import("@prisma/client/runtime/library").JsonValue | null;
         ipAddress: string | null;
         userAgent: string | null;
     }) | null>;

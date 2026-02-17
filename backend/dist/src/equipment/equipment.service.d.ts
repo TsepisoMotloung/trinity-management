@@ -33,7 +33,7 @@ export declare class EquipmentService {
             serialNumber: string | null;
             barcode: string | null;
             purchaseDate: Date | null;
-            purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+            purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
             currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
             quantity: number;
             unit: string;
@@ -75,7 +75,7 @@ export declare class EquipmentService {
         serialNumber: string | null;
         barcode: string | null;
         purchaseDate: Date | null;
-        purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+        purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
         currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
         quantity: number;
         unit: string;
@@ -107,7 +107,7 @@ export declare class EquipmentService {
             serialNumber: string | null;
             barcode: string | null;
             purchaseDate: Date | null;
-            purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+            purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
             currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
             quantity: number;
             unit: string;
@@ -167,7 +167,7 @@ export declare class EquipmentService {
             reportedIssue: string;
             diagnosis: string | null;
             repairNotes: string | null;
-            cost: import("@prisma/client-runtime-utils").Decimal | null;
+            cost: import("@prisma/client/runtime/library").Decimal | null;
             vendorName: string | null;
             startedAt: Date | null;
             completedAt: Date | null;
@@ -183,7 +183,7 @@ export declare class EquipmentService {
         serialNumber: string | null;
         barcode: string | null;
         purchaseDate: Date | null;
-        purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+        purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
         currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
         quantity: number;
         unit: string;
@@ -208,7 +208,7 @@ export declare class EquipmentService {
         serialNumber: string | null;
         barcode: string | null;
         purchaseDate: Date | null;
-        purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+        purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
         currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
         quantity: number;
         unit: string;
@@ -233,7 +233,7 @@ export declare class EquipmentService {
         serialNumber: string | null;
         barcode: string | null;
         purchaseDate: Date | null;
-        purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+        purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
         currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
         quantity: number;
         unit: string;
@@ -258,7 +258,7 @@ export declare class EquipmentService {
         serialNumber: string | null;
         barcode: string | null;
         purchaseDate: Date | null;
-        purchasePrice: import("@prisma/client-runtime-utils").Decimal | null;
+        purchasePrice: import("@prisma/client/runtime/library").Decimal | null;
         currentStatus: import("@prisma/client").$Enums.EquipmentStatus;
         quantity: number;
         unit: string;

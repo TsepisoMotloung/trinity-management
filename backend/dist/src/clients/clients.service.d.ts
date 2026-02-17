@@ -69,16 +69,16 @@ export declare class ClientsService {
             quoteNumber: string;
             issueDate: Date;
             validUntil: Date;
-            total: import("@prisma/client-runtime-utils").Decimal;
+            total: import("@prisma/client/runtime/library").Decimal;
         }[];
         invoices: {
             id: string;
             status: import("@prisma/client").$Enums.InvoiceStatus;
             issueDate: Date;
-            total: import("@prisma/client-runtime-utils").Decimal;
+            total: import("@prisma/client/runtime/library").Decimal;
             invoiceNumber: string;
             dueDate: Date;
-            amountPaid: import("@prisma/client-runtime-utils").Decimal;
+            amountPaid: import("@prisma/client/runtime/library").Decimal;
         }[];
     } & {
         id: string;
@@ -143,7 +143,7 @@ export declare class ClientsService {
                 id: string;
                 createdAt: Date;
                 notes: string | null;
-                amount: import("@prisma/client-runtime-utils").Decimal;
+                amount: import("@prisma/client/runtime/library").Decimal;
                 paymentMethod: import("@prisma/client").$Enums.PaymentMethod;
                 paymentDate: Date;
                 referenceNumber: string | null;
@@ -159,16 +159,16 @@ export declare class ClientsService {
             clientId: string;
             eventId: string | null;
             issueDate: Date;
-            subtotal: import("@prisma/client-runtime-utils").Decimal;
-            taxAmount: import("@prisma/client-runtime-utils").Decimal;
-            discount: import("@prisma/client-runtime-utils").Decimal;
-            total: import("@prisma/client-runtime-utils").Decimal;
+            subtotal: import("@prisma/client/runtime/library").Decimal;
+            taxAmount: import("@prisma/client/runtime/library").Decimal;
+            discount: import("@prisma/client/runtime/library").Decimal;
+            total: import("@prisma/client/runtime/library").Decimal;
             terms: string | null;
             pdfUrl: string | null;
             createdById: string;
             invoiceNumber: string;
             dueDate: Date;
-            amountPaid: import("@prisma/client-runtime-utils").Decimal;
+            amountPaid: import("@prisma/client/runtime/library").Decimal;
         })[];
         payments: ({
             invoice: {
@@ -178,7 +178,7 @@ export declare class ClientsService {
             id: string;
             createdAt: Date;
             notes: string | null;
-            amount: import("@prisma/client-runtime-utils").Decimal;
+            amount: import("@prisma/client/runtime/library").Decimal;
             paymentMethod: import("@prisma/client").$Enums.PaymentMethod;
             paymentDate: Date;
             referenceNumber: string | null;
