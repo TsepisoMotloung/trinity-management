@@ -12,11 +12,31 @@ const app_module_1 = require("./app.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const configService = app.get(config_1.ConfigService);
-    app.use((0, helmet_1.default)());
+    const corsOrigin = configService.get('CORS_ORIGIN', 'http://localhost:3000');
     app.enableCors({
-        origin: configService.get('CORS_ORIGIN', 'http://localhost:3000'),
+        origin: (origin, callback) => {
+            if (!origin)
+                return callback(null, true);
+            if (origin === corsOrigin)
+                return callback(null, true);
+            if (origin.endsWith('.app.github.dev'))
+                return callback(null, true);
+            if (/^https?:\/\/localhost(:\d+)?$/.test(origin))
+                return callback(null, true);
+            callback(new Error(`CORS not allowed for origin: ${origin}`));
+        },
         credentials: true,
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+        exposedHeaders: ['Content-Range', 'X-Content-Range'],
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
     });
+    app.use((0, helmet_1.default)({
+        crossOriginResourcePolicy: { policy: 'cross-origin' },
+        crossOriginOpenerPolicy: false,
+        crossOriginEmbedderPolicy: false,
+    }));
     app.setGlobalPrefix('api/v1');
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,

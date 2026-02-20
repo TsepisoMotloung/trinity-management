@@ -9,14 +9,36 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // Security
-  app.use(helmet());
-
-  // CORS
+  // CORS - must be before helmet
+  const corsOrigin = configService.get('CORS_ORIGIN', 'http://localhost:3000');
   app.enableCors({
-    origin: configService.get('CORS_ORIGIN', 'http://localhost:3000'),
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+      // Allow configured origin
+      if (origin === corsOrigin) return callback(null, true);
+      // Allow any GitHub Codespaces origin
+      if (origin.endsWith('.app.github.dev')) return callback(null, true);
+      // Allow localhost variants
+      if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return callback(null, true);
+      callback(new Error(`CORS not allowed for origin: ${origin}`));
+    },
     credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
+
+  // Security - configure helmet to not interfere with CORS in Codespaces
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      crossOriginOpenerPolicy: false,
+      crossOriginEmbedderPolicy: false,
+    }),
+  );
 
   // Global prefix
   app.setGlobalPrefix('api/v1');

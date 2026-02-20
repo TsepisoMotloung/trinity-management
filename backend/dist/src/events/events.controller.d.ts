@@ -123,8 +123,8 @@ export declare class EventsController {
                 quantity: number;
                 notes: string | null;
                 equipmentId: string;
-                condition: string | null;
                 checkOutTransactionId: string;
+                condition: string | null;
             })[];
             checkedOutByUser: {
                 id: string;
@@ -136,8 +136,8 @@ export declare class EventsController {
             createdAt: Date;
             notes: string | null;
             eventId: string;
-            checkedOutAt: Date;
             checkedOutBy: string;
+            checkedOutAt: Date;
         })[];
         checkIns: ({
             items: ({
@@ -150,10 +150,10 @@ export declare class EventsController {
                 quantity: number;
                 equipmentId: string;
                 condition: import("@prisma/client").$Enums.ItemCondition;
+                checkInTransactionId: string;
                 returnedQuantity: number;
                 damageNotes: string | null;
                 isShortage: boolean;
-                checkInTransactionId: string;
             })[];
             checkedInByUser: {
                 id: string;
@@ -165,9 +165,9 @@ export declare class EventsController {
             createdAt: Date;
             notes: string | null;
             eventId: string;
+            checkedInBy: string;
             checkedInAt: Date;
             isReconciled: boolean;
-            checkedInBy: string;
         })[];
         quotes: {
             id: string;
