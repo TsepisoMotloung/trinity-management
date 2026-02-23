@@ -72,6 +72,11 @@ export class UpdateUserDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  isApproved?: boolean;
 }
 
 export class UserResponseDto {
@@ -95,6 +100,9 @@ export class UserResponseDto {
 
   @ApiProperty()
   isActive: boolean;
+
+  @ApiProperty()
+  isApproved: boolean;
 
   @ApiPropertyOptional()
   lastLoginAt?: Date;

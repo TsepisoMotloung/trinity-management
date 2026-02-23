@@ -45,13 +45,9 @@ export const useAuthStore = create<AuthState>()(
       register: async (data: RegisterRequest) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await api.post<TokenResponse>('/auth/register', data);
-          const { accessToken, refreshToken } = response.data;
-
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', refreshToken);
-
-          await get().fetchCurrentUser();
+          await api.post<{ message: string }>('/auth/register', data);
+          set({ isLoading: false });
+          // Registration no longer returns tokens — account needs admin approval
         } catch (error) {
           const message = getErrorMessage(error);
           set({ error: message, isLoading: false });

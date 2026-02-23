@@ -21,12 +21,14 @@ model User {
   phone           String?
   role            Role      @default(EMPLOYEE)
   isActive        Boolean   @default(true)
+  isApproved      Boolean   @default(false)
   lastLoginAt     DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
   // Relations
   refreshTokens   RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
   actionLogs      ActionLog[]
   staffAssignments StaffAssignment[]
   checkOuts       CheckOutTransaction[]
@@ -54,6 +56,20 @@ model RefreshToken {
   ipAddress   String?
   expiresAt   DateTime
   isRevoked   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model PasswordResetToken {
+  id          String   @id @default(uuid())
+  token       String   @unique @db.VarChar(500)
+  userId      String
+  expiresAt   DateTime
+  isUsed      Boolean  @default(false)
   createdAt   DateTime @default(now())
 
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)

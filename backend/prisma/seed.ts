@@ -25,6 +25,7 @@ async function main() {
   await prisma.event.deleteMany();
   await prisma.client.deleteMany();
   await prisma.actionLog.deleteMany();
+  await prisma.passwordResetToken.deleteMany();
   await prisma.refreshToken.deleteMany();
   await prisma.user.deleteMany();
 
@@ -43,6 +44,7 @@ async function main() {
         phone: '+27 71 234 5678',
         role: Role.ADMIN,
         isActive: true,
+        isApproved: true,
       },
     }),
     prisma.user.create({
@@ -54,6 +56,7 @@ async function main() {
         phone: '+27 72 345 6789',
         role: Role.EMPLOYEE,
         isActive: true,
+        isApproved: true,
       },
     }),
     prisma.user.create({
@@ -65,6 +68,7 @@ async function main() {
         phone: '+27 73 456 7890',
         role: Role.EMPLOYEE,
         isActive: true,
+        isApproved: true,
       },
     }),
     prisma.user.create({
@@ -76,6 +80,7 @@ async function main() {
         phone: '+27 74 567 8901',
         role: Role.EMPLOYEE,
         isActive: true,
+        isApproved: true,
       },
     }),
     prisma.user.create({
@@ -87,6 +92,7 @@ async function main() {
         phone: '+27 75 678 9012',
         role: Role.EMPLOYEE,
         isActive: true,
+        isApproved: true,
       },
     }),
   ]);

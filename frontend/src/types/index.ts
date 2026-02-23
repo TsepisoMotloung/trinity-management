@@ -12,6 +12,7 @@ export interface User {
   phone?: string;
   role: Role;
   isActive: boolean;
+  isApproved: boolean;
   lastLoginAt?: string;
   createdAt: string;
   updatedAt: string;
@@ -35,6 +36,15 @@ export interface TokenResponse {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  newPassword: string;
 }
 
 // Equipment Types

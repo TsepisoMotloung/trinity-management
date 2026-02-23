@@ -21,6 +21,8 @@ import {
   RefreshTokenDto,
   TokenResponseDto,
   ChangePasswordDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
 } from './dto/auth.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { Public } from '../common/decorators/public.decorator';
@@ -33,16 +35,15 @@ export class AuthController {
 
   @Post('register')
   @Public()
-  @ApiOperation({ summary: 'Register a new user' })
+  @ApiOperation({ summary: 'Register a new user (requires admin approval)' })
   @ApiResponse({
     status: 201,
-    description: 'User registered successfully',
-    type: TokenResponseDto,
+    description: 'User registered successfully, pending admin approval',
   })
   async register(
     @Body() dto: RegisterDto,
     @Req() req: express.Request,
-  ): Promise<TokenResponseDto> {
+  ): Promise<{ message: string }> {
     const ipAddress = req.ip || req.socket.remoteAddress;
     return this.authService.register(dto, ipAddress);
   }
@@ -110,6 +111,38 @@ export class AuthController {
     const ipAddress = req.ip || req.socket.remoteAddress;
     await this.authService.changePassword(userId, dto, ipAddress);
     return { message: 'Password changed successfully' };
+  }
+
+  @Post('forgot-password')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Request a password reset' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset token generated (or message sent)',
+  })
+  async forgotPassword(
+    @Body() dto: ForgotPasswordDto,
+    @Req() req: express.Request,
+  ): Promise<{ message: string; resetToken?: string }> {
+    const ipAddress = req.ip || req.socket.remoteAddress;
+    return this.authService.forgotPassword(dto, ipAddress);
+  }
+
+  @Post('reset-password')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reset password using a reset token' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset successfully',
+  })
+  async resetPassword(
+    @Body() dto: ResetPasswordDto,
+    @Req() req: express.Request,
+  ): Promise<{ message: string }> {
+    const ipAddress = req.ip || req.socket.remoteAddress;
+    return this.authService.resetPassword(dto, ipAddress);
   }
 
   @Post('me')

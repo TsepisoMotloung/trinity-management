@@ -24,6 +24,7 @@ export class UsersService {
     phone: true,
     role: true,
     isActive: true,
+    isApproved: true,
     lastLoginAt: true,
     createdAt: true,
     updatedAt: true,
@@ -48,6 +49,7 @@ export class UsersService {
         lastName: dto.lastName,
         phone: dto.phone,
         role: dto.role || 'EMPLOYEE',
+        isApproved: true, // Admin-created users are auto-approved
       },
       select: this.userSelect,
     });
@@ -166,6 +168,7 @@ export class UsersService {
         ...(dto.phone !== undefined && { phone: dto.phone }),
         ...(dto.role && { role: dto.role }),
         ...(dto.isActive !== undefined && { isActive: dto.isActive }),
+        ...(dto.isApproved !== undefined && { isApproved: dto.isApproved }),
       },
       select: this.userSelect,
     });
@@ -255,5 +258,70 @@ export class UsersService {
     });
 
     return { message: 'Password reset successfully' };
+  }
+
+  async approveUser(id: string, currentUserId: string, ipAddress?: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.isApproved) {
+      return { message: 'User is already approved' };
+    }
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data: { isApproved: true },
+      select: this.userSelect,
+    });
+
+    await this.actionLogService.log({
+      userId: currentUserId,
+      action: 'USER_APPROVED',
+      entityType: 'User',
+      entityId: id,
+      details: { approvedBy: currentUserId, email: user.email },
+      ipAddress,
+    });
+
+    return updatedUser;
+  }
+
+  async rejectUser(id: string, currentUserId: string, ipAddress?: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (id === currentUserId) {
+      throw new ForbiddenException('Cannot reject your own account');
+    }
+
+    // Deactivate and mark as not approved
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data: { isApproved: false, isActive: false },
+      select: this.userSelect,
+    });
+
+    // Revoke all refresh tokens
+    await this.prisma.refreshToken.updateMany({
+      where: { userId: id },
+      data: { isRevoked: true },
+    });
+
+    await this.actionLogService.log({
+      userId: currentUserId,
+      action: 'USER_REJECTED',
+      entityType: 'User',
+      entityId: id,
+      details: { rejectedBy: currentUserId, email: user.email },
+      ipAddress,
+    });
+
+    return updatedUser;
   }
 }

@@ -123,4 +123,28 @@ export class UsersController {
       ipAddress,
     );
   }
+
+  @Post(':id/approve')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Approve a pending user registration (Admin only)' })
+  approveUser(
+    @Param('id') id: string,
+    @CurrentUser('id') currentUserId: string,
+    @Req() req: express.Request,
+  ) {
+    const ipAddress = req.ip || req.socket.remoteAddress;
+    return this.usersService.approveUser(id, currentUserId, ipAddress);
+  }
+
+  @Post(':id/reject')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Reject a pending user registration (Admin only)' })
+  rejectUser(
+    @Param('id') id: string,
+    @CurrentUser('id') currentUserId: string,
+    @Req() req: express.Request,
+  ) {
+    const ipAddress = req.ip || req.socket.remoteAddress;
+    return this.usersService.rejectUser(id, currentUserId, ipAddress);
+  }
 }
