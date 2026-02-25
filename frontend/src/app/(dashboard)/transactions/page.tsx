@@ -85,7 +85,6 @@ interface OverdueItem {
     status: string;
   };
   daysOverdue: number;
-  quantity: number;
   status: BookingStatus;
 }
 
@@ -104,7 +103,6 @@ interface CheckOutItemForm {
   equipmentId: string;
   equipmentName: string;
   categoryName?: string;
-  quantity: number;
   condition: string;
   notes: string;
   selected: boolean;
@@ -114,8 +112,6 @@ interface CheckInItemForm {
   equipmentId: string;
   equipmentName: string;
   categoryName?: string;
-  quantity: number;
-  returnedQuantity: number;
   condition: ItemCondition;
   damageNotes: string;
   selected: boolean;
@@ -250,7 +246,6 @@ export default function TransactionsPage() {
           equipmentId: b.equipmentId,
           equipmentName: b.equipment?.name || 'Unknown',
           categoryName: b.equipment?.category?.name,
-          quantity: b.quantity,
           condition: 'GOOD',
           notes: '',
           selected: true,
@@ -267,30 +262,20 @@ export default function TransactionsPage() {
       const res = await api.get(`/transactions/event/${eventId}`);
       const txData = res.data as EventTransactions;
       // Get all checked-out items that haven't been checked in yet
-      const checkedOutEquipment = new Map<string, { name: string; category?: string; quantity: number }>();
+      // Track which individual items have been checked out
+      const checkedOutEquipment = new Map<string, { name: string; category?: string }>();
       txData.checkOuts.forEach((co) => {
         co.items.forEach((item) => {
-          const existing = checkedOutEquipment.get(item.equipmentId);
-          const qty = (existing?.quantity || 0) + item.quantity;
           checkedOutEquipment.set(item.equipmentId, {
             name: item.equipment?.name || 'Unknown',
             category: item.equipment?.category?.name,
-            quantity: qty,
           });
         });
       });
-      // Subtract already checked-in items
+      // Remove items already checked in
       txData.checkIns.forEach((ci) => {
         ci.items.forEach((item) => {
-          const existing = checkedOutEquipment.get(item.equipmentId);
-          if (existing) {
-            const remaining = existing.quantity - item.returnedQuantity;
-            if (remaining <= 0) {
-              checkedOutEquipment.delete(item.equipmentId);
-            } else {
-              checkedOutEquipment.set(item.equipmentId, { ...existing, quantity: remaining });
-            }
-          }
+          checkedOutEquipment.delete(item.equipmentId);
         });
       });
 
@@ -304,8 +289,6 @@ export default function TransactionsPage() {
           equipmentId,
           equipmentName: data.name,
           categoryName: data.category,
-          quantity: data.quantity,
-          returnedQuantity: data.quantity,
           condition: ItemCondition.GOOD,
           damageNotes: '',
           selected: true,
@@ -326,7 +309,6 @@ export default function TransactionsPage() {
       eventId: selectedEventId,
       items: selectedItems.map((item) => ({
         equipmentId: item.equipmentId,
-        quantity: item.quantity,
         condition: item.condition,
         notes: item.notes || undefined,
       })),
@@ -344,8 +326,6 @@ export default function TransactionsPage() {
       eventId: selectedEventId,
       items: selectedItems.map((item) => ({
         equipmentId: item.equipmentId,
-        quantity: item.quantity,
-        returnedQuantity: item.returnedQuantity,
         condition: item.condition,
         damageNotes: item.damageNotes || undefined,
       })),
@@ -857,8 +837,7 @@ export default function TransactionsPage() {
                                   <p className="text-sm text-muted-foreground">{item.categoryName}</p>
                                 )}
                               </div>
-                              <Badge variant="outline">Qty: {item.quantity}</Badge>
-                            </div>
+                                            </div>
                             {item.selected && (
                               <div className="grid grid-cols-2 gap-3">
                                 <div className="space-y-1">
@@ -1030,8 +1009,7 @@ export default function TransactionsPage() {
                                   <p className="text-sm text-muted-foreground">{item.categoryName}</p>
                                 )}
                               </div>
-                              <Badge variant="outline">Qty: {item.quantity}</Badge>
-                            </div>
+                                            </div>
                             {item.selected && (
                               <div className="space-y-3">
                                 <div className="grid grid-cols-2 gap-3">
@@ -1076,21 +1054,7 @@ export default function TransactionsPage() {
                                       </SelectContent>
                                     </Select>
                                   </div>
-                                  <div className="space-y-1">
-                                    <Label className="text-xs">Qty Returned</Label>
-                                    <Input
-                                      type="number"
-                                      className="h-8"
-                                      min={0}
-                                      max={item.quantity}
-                                      value={item.returnedQuantity}
-                                      onChange={(e) => {
-                                        const updated = [...checkInItems];
-                                        updated[idx].returnedQuantity = parseInt(e.target.value) || 0;
-                                        setCheckInItems(updated);
-                                      }}
-                                    />
-                                  </div>
+
                                 </div>
                                 {(item.condition === ItemCondition.DAMAGED ||
                                   item.condition === ItemCondition.LOST) && (
@@ -1255,7 +1219,6 @@ export default function TransactionsPage() {
                           <TableHeader>
                             <TableRow>
                               <TableHead>Equipment</TableHead>
-                              <TableHead>Qty</TableHead>
                               <TableHead>Condition</TableHead>
                               <TableHead>Notes</TableHead>
                             </TableRow>
@@ -1266,7 +1229,6 @@ export default function TransactionsPage() {
                                 <TableCell className="font-medium">
                                   {item.equipment?.name}
                                 </TableCell>
-                                <TableCell>{item.quantity}</TableCell>
                                 <TableCell>{conditionBadge(item.condition || 'GOOD')}</TableCell>
                                 <TableCell className="text-sm text-muted-foreground">
                                   {item.notes || '-'}
@@ -1310,8 +1272,6 @@ export default function TransactionsPage() {
                           <TableHeader>
                             <TableRow>
                               <TableHead>Equipment</TableHead>
-                              <TableHead>Qty</TableHead>
-                              <TableHead>Returned</TableHead>
                               <TableHead>Condition</TableHead>
                               <TableHead>Notes</TableHead>
                             </TableRow>
@@ -1329,15 +1289,6 @@ export default function TransactionsPage() {
                               >
                                 <TableCell className="font-medium">
                                   {item.equipment?.name}
-                                </TableCell>
-                                <TableCell>{item.quantity}</TableCell>
-                                <TableCell>
-                                  {item.returnedQuantity}
-                                  {item.isShortage && (
-                                    <Badge variant="destructive" className="ml-2 text-xs">
-                                      Shortage
-                                    </Badge>
-                                  )}
                                 </TableCell>
                                 <TableCell>{conditionBadge(item.condition)}</TableCell>
                                 <TableCell className="text-sm text-muted-foreground">
