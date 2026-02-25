@@ -13,6 +13,7 @@ import { ActionLogModule } from './action-log/action-log.module';
 import { FinanceModule } from './finance/finance.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { MaintenanceModule } from './maintenance/maintenance.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
@@ -39,6 +40,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     FinanceModule,
     TransactionsModule,
     MaintenanceModule,
+    NotificationsModule,
   ],
   providers: [
     {

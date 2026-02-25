@@ -10,12 +10,7 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import * as express from 'express';
 import { EquipmentService } from './equipment.service';
 import {
@@ -40,13 +35,8 @@ export class EquipmentController {
 
   @Post('categories')
   @ApiOperation({ summary: 'Create equipment category' })
-  createCategory(
-    @Body() dto: CreateEquipmentCategoryDto,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.equipmentService.createCategory(dto, userId, ipAddress);
+  createCategory(@Body() dto: CreateEquipmentCategoryDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.equipmentService.createCategory(dto, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Get('categories')
@@ -63,38 +53,22 @@ export class EquipmentController {
 
   @Patch('categories/:id')
   @ApiOperation({ summary: 'Update equipment category' })
-  updateCategory(
-    @Param('id') id: string,
-    @Body() dto: UpdateEquipmentCategoryDto,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.equipmentService.updateCategory(id, dto, userId, ipAddress);
+  updateCategory(@Param('id') id: string, @Body() dto: UpdateEquipmentCategoryDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.equipmentService.updateCategory(id, dto, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Delete('categories/:id')
   @ApiOperation({ summary: 'Delete equipment category' })
-  deleteCategory(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.equipmentService.deleteCategory(id, userId, ipAddress);
+  deleteCategory(@Param('id') id: string, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.equipmentService.deleteCategory(id, userId, req.ip || req.socket.remoteAddress);
   }
 
   // ==================== EQUIPMENT ITEMS ====================
 
   @Post('items')
-  @ApiOperation({ summary: 'Create equipment item' })
-  createItem(
-    @Body() dto: CreateEquipmentItemDto,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.equipmentService.createItem(dto, userId, ipAddress);
+  @ApiOperation({ summary: 'Create equipment item (individual unit)' })
+  createItem(@Body() dto: CreateEquipmentItemDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.equipmentService.createItem(dto, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Get('items')
@@ -134,58 +108,43 @@ export class EquipmentController {
 
   @Patch('items/:id')
   @ApiOperation({ summary: 'Update equipment item' })
-  updateItem(
-    @Param('id') id: string,
-    @Body() dto: UpdateEquipmentItemDto,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.equipmentService.updateItem(id, dto, userId, ipAddress);
+  updateItem(@Param('id') id: string, @Body() dto: UpdateEquipmentItemDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.equipmentService.updateItem(id, dto, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Patch('items/:id/status')
   @ApiOperation({ summary: 'Update equipment status' })
-  updateItemStatus(
-    @Param('id') id: string,
-    @Body() dto: UpdateEquipmentStatusDto,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.equipmentService.updateItemStatus(id, dto, userId, ipAddress);
+  updateItemStatus(@Param('id') id: string, @Body() dto: UpdateEquipmentStatusDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.equipmentService.updateItemStatus(id, dto, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Delete('items/:id')
   @ApiOperation({ summary: 'Delete equipment item' })
-  deleteItem(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.equipmentService.deleteItem(id, userId, ipAddress);
+  deleteItem(@Param('id') id: string, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.equipmentService.deleteItem(id, userId, req.ip || req.socket.remoteAddress);
   }
 
   // ==================== AVAILABILITY & STATS ====================
 
-  @Post('availability')
-  @ApiOperation({ summary: 'Check equipment availability for date range' })
-  checkAvailability(
-    @Body()
-    body: {
-      equipmentIds: string[];
-      startDate: string;
-      endDate: string;
-      excludeEventId?: string;
-    },
+  @Get('available')
+  @ApiOperation({ summary: 'Get equipment available for a date range' })
+  @ApiQuery({ name: 'startDate', required: true, type: String })
+  @ApiQuery({ name: 'endDate', required: true, type: String })
+  @ApiQuery({ name: 'categoryId', required: false, type: String })
+  @ApiQuery({ name: 'excludeEventId', required: false, type: String })
+  getAvailableItems(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+    @Query('categoryId') categoryId?: string,
+    @Query('excludeEventId') excludeEventId?: string,
   ) {
-    return this.equipmentService.checkAvailability(
-      body.equipmentIds,
-      new Date(body.startDate),
-      new Date(body.endDate),
-      body.excludeEventId,
-    );
+    return this.equipmentService.getAvailableItems(new Date(startDate), new Date(endDate), categoryId, excludeEventId);
+  }
+
+  @Post('availability')
+  @ApiOperation({ summary: 'Check specific equipment availability' })
+  checkAvailability(@Body() body: { equipmentIds: string[]; startDate: string; endDate: string; excludeEventId?: string }) {
+    return this.equipmentService.checkAvailability(body.equipmentIds, new Date(body.startDate), new Date(body.endDate), body.excludeEventId);
   }
 
   @Get('statistics')

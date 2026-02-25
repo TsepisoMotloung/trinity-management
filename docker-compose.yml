@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  trinity:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trinity-management
+    ports:
+      - "3000:3000"   # Frontend
+      - "3001:3001"   # Backend API
+    environment:
+      # Database - REQUIRED: set your MySQL connection string
+      - DATABASE_URL=mysql://app_user:Wolfie123@host.docker.internal:3306/trinity_sound
+
+      # JWT
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - JWT_ACCESS_EXPIRATION=15m
+      - JWT_REFRESH_EXPIRATION=7d
+
+      # Server
+      - PORT=3001
+      - HOST=0.0.0.0
+      - NODE_ENV=production
+      - CORS_ORIGIN=http://localhost:3000
+
+      # Rate limiting
+      - THROTTLE_TTL=60
+      - THROTTLE_LIMIT=100
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

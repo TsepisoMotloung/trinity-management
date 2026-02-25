@@ -16,12 +16,6 @@ export class CheckOutItemDto {
   @IsString()
   equipmentId: string;
 
-  @ApiPropertyOptional({ description: 'Quantity to check out' })
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  quantity?: number;
-
   @ApiPropertyOptional({ description: 'Condition at checkout' })
   @IsOptional()
   @IsString()
@@ -54,18 +48,6 @@ export class CheckInItemDto {
   @ApiProperty({ description: 'Equipment ID to check in' })
   @IsString()
   equipmentId: string;
-
-  @ApiPropertyOptional({ description: 'Quantity returned' })
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  quantity?: number;
-
-  @ApiPropertyOptional({ description: 'Quantity returned (if different)' })
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  returnedQuantity?: number;
 
   @ApiProperty({ enum: ItemCondition, description: 'Condition at check-in' })
   @IsEnum(ItemCondition)

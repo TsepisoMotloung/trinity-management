@@ -13,6 +13,7 @@ interface AuthState {
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => Promise<void>;
   fetchCurrentUser: () => Promise<void>;
+  setUser: (user: User) => void;
   clearError: () => void;
 }
 
@@ -87,6 +88,8 @@ export const useAuthStore = create<AuthState>()(
       },
 
       clearError: () => set({ error: null }),
+
+      setUser: (user: User) => set({ user }),
     }),
     {
       name: 'auth-storage',

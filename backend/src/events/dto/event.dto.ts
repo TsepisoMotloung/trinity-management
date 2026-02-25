@@ -6,8 +6,6 @@ import {
   IsUUID,
   IsArray,
   ValidateNested,
-  IsNumber,
-  Min,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -21,6 +19,21 @@ export enum EventStatus {
   CANCELLED = 'CANCELLED',
 }
 
+export class StaffAssignmentInput {
+  @ApiProperty()
+  @IsUUID()
+  userId: string;
+
+  @ApiProperty({ example: 'Sound Engineer' })
+  @IsString()
+  role: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  notes?: string;
+}
+
 export class CreateEventDto {
   @ApiProperty({ example: 'ABC Company Annual Party' })
   @IsString()
@@ -30,22 +43,25 @@ export class CreateEventDto {
   @IsString()
   eventType: string;
 
-  @ApiPropertyOptional({
-    example: 'Annual company celebration with live music',
-  })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiProperty({ example: 'uuid-of-client' })
+  @ApiProperty()
   @IsUUID()
   clientId: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  quoteId?: string;
 
   @ApiProperty({ example: 'Grand Hotel Ballroom' })
   @IsString()
   venue: string;
 
-  @ApiPropertyOptional({ example: '123 Hotel Street, Harare' })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   venueAddress?: string;
@@ -58,12 +74,12 @@ export class CreateEventDto {
   @IsDateString()
   endDate: string;
 
-  @ApiPropertyOptional({ example: '2024-03-15T14:00:00Z' })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsDateString()
   setupTime?: string;
 
-  @ApiPropertyOptional({ example: '2x PA speakers, 4x microphones, DJ setup' })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   requirements?: string;
@@ -72,6 +88,88 @@ export class CreateEventDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @ApiPropertyOptional({ description: 'Equipment item IDs to book' })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  equipmentIds?: string[];
+
+  @ApiPropertyOptional({ description: 'Staff to assign', type: [StaffAssignmentInput] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => StaffAssignmentInput)
+  staffAssignments?: StaffAssignmentInput[];
+}
+
+export class CreateEventFromQuoteDto {
+  @ApiProperty()
+  @IsUUID()
+  quoteId: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  eventType?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  venue?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  venueAddress?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDateString()
+  startDate?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDateString()
+  endDate?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDateString()
+  setupTime?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  requirements?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  notes?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  equipmentIds?: string[];
+
+  @ApiPropertyOptional({ type: [StaffAssignmentInput] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => StaffAssignmentInput)
+  staffAssignments?: StaffAssignmentInput[];
 }
 
 export class UpdateEventDto {
@@ -137,16 +235,9 @@ export class UpdateEventDto {
 }
 
 export class BookEquipmentDto {
-  @ApiProperty({ example: 'uuid-of-equipment' })
+  @ApiProperty()
   @IsUUID()
   equipmentId: string;
-
-  @ApiPropertyOptional({ example: 2 })
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  @Type(() => Number)
-  quantity?: number;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -163,7 +254,7 @@ export class BookMultipleEquipmentDto {
 }
 
 export class AssignStaffDto {
-  @ApiProperty({ example: 'uuid-of-user' })
+  @ApiProperty()
   @IsUUID()
   userId: string;
 
@@ -178,11 +269,11 @@ export class AssignStaffDto {
 }
 
 export class CalendarQueryDto {
-  @ApiProperty({ example: '2024-03-01' })
+  @ApiProperty()
   @IsDateString()
   startDate: string;
 
-  @ApiProperty({ example: '2024-03-31' })
+  @ApiProperty()
   @IsDateString()
   endDate: string;
 

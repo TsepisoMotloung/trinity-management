@@ -40,6 +40,41 @@ export class CreateQuoteDto {
   @IsString()
   eventId?: string;
 
+  @ApiPropertyOptional({ example: 'EVENT', description: 'EVENT or HIRE' })
+  @IsOptional()
+  @IsString()
+  quoteType?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  proposedEventName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  proposedEventType?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDateString()
+  proposedStartDate?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDateString()
+  proposedEndDate?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  proposedVenue?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  proposedVenueAddress?: string;
+
   @ApiProperty({ type: [QuoteLineItemDto] })
   @IsArray()
   @ValidateNested({ each: true })
@@ -109,6 +144,11 @@ export class CreateInvoiceDto {
   @IsString()
   eventId?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  quoteId?: string;
+
   @ApiProperty({ type: [InvoiceLineItemDto] })
   @IsArray()
   @ValidateNested({ each: true })
@@ -174,6 +214,11 @@ export class CreatePaymentDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  proofOfPaymentUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
   notes?: string;
 
   @ApiPropertyOptional()
@@ -183,3 +228,40 @@ export class CreatePaymentDto {
 }
 
 export class UpdatePaymentDto extends PartialType(CreatePaymentDto) {}
+
+// ==================== Invoice from Quote ====================
+
+export class CreateInvoiceFromQuoteDto {
+  @ApiProperty()
+  @IsString()
+  quoteId: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDateString()
+  dueDate?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  notes?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  terms?: string;
+}
+
+// ==================== Send Quote ====================
+
+export class SendQuoteDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  email?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  message?: string;
+}

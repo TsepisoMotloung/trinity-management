@@ -10,12 +10,7 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import * as express from 'express';
 import { EventsService } from './events.service';
 import {
@@ -25,6 +20,7 @@ import {
   BookMultipleEquipmentDto,
   AssignStaffDto,
   EventStatus,
+  CreateEventFromQuoteDto,
 } from './dto/event.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -38,13 +34,14 @@ export class EventsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new event' })
-  create(
-    @Body() dto: CreateEventDto,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.eventsService.create(dto, userId, ipAddress);
+  create(@Body() dto: CreateEventDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.eventsService.create(dto, userId, req.ip || req.socket.remoteAddress);
+  }
+
+  @Post('from-quote')
+  @ApiOperation({ summary: 'Create event from accepted quote' })
+  createFromQuote(@Body() dto: CreateEventFromQuoteDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.eventsService.createFromQuote(dto, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Get()
@@ -68,9 +65,7 @@ export class EventsController {
     return this.eventsService.findAll({
       skip: skip ? parseInt(skip, 10) : undefined,
       take: take ? parseInt(take, 10) : undefined,
-      search,
-      status,
-      clientId,
+      search, status, clientId,
       startDate: startDate ? new Date(startDate) : undefined,
       endDate: endDate ? new Date(endDate) : undefined,
     });
@@ -78,27 +73,36 @@ export class EventsController {
 
   @Get('calendar')
   @ApiOperation({ summary: 'Get events for calendar view' })
-  @ApiQuery({ name: 'startDate', required: true, type: String })
-  @ApiQuery({ name: 'endDate', required: true, type: String })
-  @ApiQuery({ name: 'status', required: false, type: String })
-  @ApiQuery({ name: 'clientId', required: false, type: String })
+  @ApiQuery({ name: 'startDate', required: true })
+  @ApiQuery({ name: 'endDate', required: true })
+  @ApiQuery({ name: 'status', required: false })
+  @ApiQuery({ name: 'clientId', required: false })
   getCalendar(
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
     @Query('status') status?: string,
     @Query('clientId') clientId?: string,
   ) {
-    return this.eventsService.getCalendar(
-      new Date(startDate),
-      new Date(endDate),
-      { status, clientId },
-    );
+    return this.eventsService.getCalendar(new Date(startDate), new Date(endDate), { status, clientId });
   }
 
   @Get('statistics')
   @ApiOperation({ summary: 'Get event statistics' })
   getStatistics() {
     return this.eventsService.getStatistics();
+  }
+
+  @Get('available-staff')
+  @ApiOperation({ summary: 'Get staff available for date range' })
+  @ApiQuery({ name: 'startDate', required: true })
+  @ApiQuery({ name: 'endDate', required: true })
+  @ApiQuery({ name: 'excludeEventId', required: false })
+  getAvailableStaff(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+    @Query('excludeEventId') excludeEventId?: string,
+  ) {
+    return this.eventsService.getAvailableStaff(new Date(startDate), new Date(endDate), excludeEventId);
   }
 
   @Get(':id')
@@ -109,115 +113,53 @@ export class EventsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update event' })
-  update(
-    @Param('id') id: string,
-    @Body() dto: UpdateEventDto,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.eventsService.update(id, dto, userId, ipAddress);
+  update(@Param('id') id: string, @Body() dto: UpdateEventDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.eventsService.update(id, dto, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Patch(':id/status')
   @ApiOperation({ summary: 'Update event status' })
-  updateStatus(
-    @Param('id') id: string,
-    @Body('status') status: EventStatus,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.eventsService.updateStatus(id, status, userId, ipAddress);
+  updateStatus(@Param('id') id: string, @Body('status') status: EventStatus, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.eventsService.updateStatus(id, status, userId, req.ip || req.socket.remoteAddress);
   }
 
   // ==================== EQUIPMENT BOOKING ====================
 
   @Post(':id/equipment')
   @ApiOperation({ summary: 'Book equipment for event' })
-  bookEquipment(
-    @Param('id') eventId: string,
-    @Body() dto: BookEquipmentDto,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.eventsService.bookEquipment(eventId, dto, userId, ipAddress);
+  bookEquipment(@Param('id') eventId: string, @Body() dto: BookEquipmentDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.eventsService.bookEquipment(eventId, dto, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Post(':id/equipment/bulk')
-  @ApiOperation({ summary: 'Book multiple equipment for event' })
-  bookMultipleEquipment(
-    @Param('id') eventId: string,
-    @Body() dto: BookMultipleEquipmentDto,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.eventsService.bookMultipleEquipment(
-      eventId,
-      dto.items,
-      userId,
-      ipAddress,
-    );
+  @ApiOperation({ summary: 'Book multiple equipment' })
+  bookMultipleEquipment(@Param('id') eventId: string, @Body() dto: BookMultipleEquipmentDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.eventsService.bookMultipleEquipment(eventId, dto.items, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Delete(':id/equipment/:bookingId')
   @ApiOperation({ summary: 'Remove equipment booking' })
-  removeEquipmentBooking(
-    @Param('id') eventId: string,
-    @Param('bookingId') bookingId: string,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.eventsService.removeEquipmentBooking(
-      eventId,
-      bookingId,
-      userId,
-      ipAddress,
-    );
+  removeEquipmentBooking(@Param('id') eventId: string, @Param('bookingId') bookingId: string, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.eventsService.removeEquipmentBooking(eventId, bookingId, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Post(':id/equipment/confirm')
-  @ApiOperation({ summary: 'Confirm all pending equipment bookings' })
-  confirmBookings(
-    @Param('id') eventId: string,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.eventsService.confirmBookings(eventId, userId, ipAddress);
+  @ApiOperation({ summary: 'Confirm all pending bookings' })
+  confirmBookings(@Param('id') eventId: string, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.eventsService.confirmBookings(eventId, userId, req.ip || req.socket.remoteAddress);
   }
 
-  // ==================== STAFF ASSIGNMENTS ====================
+  // ==================== STAFF ====================
 
   @Post(':id/staff')
   @ApiOperation({ summary: 'Assign staff to event' })
-  assignStaff(
-    @Param('id') eventId: string,
-    @Body() dto: AssignStaffDto,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.eventsService.assignStaff(eventId, dto, userId, ipAddress);
+  assignStaff(@Param('id') eventId: string, @Body() dto: AssignStaffDto, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.eventsService.assignStaff(eventId, dto, userId, req.ip || req.socket.remoteAddress);
   }
 
   @Delete(':id/staff/:assignmentId')
   @ApiOperation({ summary: 'Remove staff assignment' })
-  removeStaffAssignment(
-    @Param('id') eventId: string,
-    @Param('assignmentId') assignmentId: string,
-    @CurrentUser('id') userId: string,
-    @Req() req: express.Request,
-  ) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
-    return this.eventsService.removeStaffAssignment(
-      eventId,
-      assignmentId,
-      userId,
-      ipAddress,
-    );
+  removeStaffAssignment(@Param('id') eventId: string, @Param('assignmentId') assignmentId: string, @CurrentUser('id') userId: string, @Req() req: express.Request) {
+    return this.eventsService.removeStaffAssignment(eventId, assignmentId, userId, req.ip || req.socket.remoteAddress);
   }
 }

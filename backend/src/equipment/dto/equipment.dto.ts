@@ -5,7 +5,6 @@ import {
   IsEnum,
   IsDateString,
   IsUUID,
-  Min,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -32,23 +31,23 @@ export class CreateEquipmentCategoryDto {
 }
 
 export class UpdateEquipmentCategoryDto {
-  @ApiPropertyOptional({ example: 'Speakers' })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   name?: string;
 
-  @ApiPropertyOptional({ example: 'All types of speakers and monitors' })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   description?: string;
 }
 
 export class CreateEquipmentItemDto {
-  @ApiProperty({ example: 'JBL EON615' })
+  @ApiProperty({ example: 'JBL EON615 #1' })
   @IsString()
   name: string;
 
-  @ApiPropertyOptional({ example: '15-inch powered PA speaker with Bluetooth' })
+  @ApiPropertyOptional({ example: '15-inch powered PA speaker' })
   @IsOptional()
   @IsString()
   description?: string;
@@ -78,18 +77,6 @@ export class CreateEquipmentItemDto {
   @Type(() => Number)
   purchasePrice?: number;
 
-  @ApiPropertyOptional({ example: 2 })
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  @Type(() => Number)
-  quantity?: number;
-
-  @ApiPropertyOptional({ example: 'piece' })
-  @IsOptional()
-  @IsString()
-  unit?: string;
-
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
@@ -102,7 +89,7 @@ export class CreateEquipmentItemDto {
 }
 
 export class UpdateEquipmentItemDto {
-  @ApiPropertyOptional({ example: 'JBL EON615' })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   name?: string;
@@ -137,18 +124,6 @@ export class UpdateEquipmentItemDto {
   @IsNumber()
   @Type(() => Number)
   purchasePrice?: number;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  @Type(() => Number)
-  quantity?: number;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  unit?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

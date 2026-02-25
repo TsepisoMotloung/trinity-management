@@ -8,6 +8,7 @@ import {
   Body,
   Param,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -16,6 +17,7 @@ import {
   ApiBearerAuth,
   ApiQuery,
 } from '@nestjs/swagger';
+import type { Response } from 'express';
 import { FinanceService } from './finance.service';
 import {
   CreateQuoteDto,
@@ -25,8 +27,11 @@ import {
   UpdateInvoiceDto,
   UpdateInvoiceStatusDto,
   CreatePaymentDto,
+  CreateInvoiceFromQuoteDto,
+  SendQuoteDto,
 } from './dto/finance.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { Public } from '../common/decorators/public.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { QuoteStatus, InvoiceStatus } from '@prisma/client';
 
@@ -100,6 +105,45 @@ export class FinanceController {
     return this.financeService.deleteQuote(id, userId);
   }
 
+  @Post('quotes/:id/send')
+  @ApiOperation({ summary: 'Send quote to client' })
+  sendQuote(
+    @Param('id') id: string,
+    @Body() dto: SendQuoteDto,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.financeService.sendQuote(id, dto, userId);
+  }
+
+  @Get('quotes/:id/pdf')
+  @ApiOperation({ summary: 'Download quote as PDF' })
+  async downloadQuotePdf(@Param('id') id: string, @Res() res: Response) {
+    const pdf = await this.financeService.generateQuotePdf(id);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="quote-${id}.pdf"`,
+      'Content-Length': pdf.length,
+    });
+    res.end(pdf);
+  }
+
+  @Public()
+  @Get('quotes/accept/:token')
+  @ApiOperation({ summary: 'Accept quote via token (public endpoint)' })
+  acceptQuote(@Param('token') token: string) {
+    return this.financeService.acceptQuoteByToken(token);
+  }
+
+  @Public()
+  @Post('quotes/reject/:token')
+  @ApiOperation({ summary: 'Reject quote via token (public endpoint)' })
+  rejectQuote(
+    @Param('token') token: string,
+    @Body('reason') reason?: string,
+  ) {
+    return this.financeService.rejectQuoteByToken(token, reason);
+  }
+
   // ==================== INVOICES ====================
 
   @Post('invoices')
@@ -109,6 +153,15 @@ export class FinanceController {
     @CurrentUser('id') userId: string,
   ) {
     return this.financeService.createInvoice(dto, userId);
+  }
+
+  @Post('invoices/from-quote')
+  @ApiOperation({ summary: 'Create invoice from accepted quote' })
+  createInvoiceFromQuote(
+    @Body() dto: CreateInvoiceFromQuoteDto,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.financeService.createInvoiceFromQuote(dto, userId);
   }
 
   @Get('invoices')
@@ -164,6 +217,18 @@ export class FinanceController {
   @ApiOperation({ summary: 'Delete an invoice' })
   deleteInvoice(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.financeService.deleteInvoice(id, userId);
+  }
+
+  @Get('invoices/:id/pdf')
+  @ApiOperation({ summary: 'Download invoice as PDF' })
+  async downloadInvoicePdf(@Param('id') id: string, @Res() res: Response) {
+    const pdf = await this.financeService.generateInvoicePdf(id);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="invoice-${id}.pdf"`,
+      'Content-Length': pdf.length,
+    });
+    res.end(pdf);
   }
 
   // ==================== PAYMENTS ====================

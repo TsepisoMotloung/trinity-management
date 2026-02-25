@@ -185,7 +185,7 @@ export class ClientsService {
       throw new NotFoundException('Client not found');
     }
 
-    const [events, invoices, payments] = await Promise.all([
+    const [events, quotes, invoices, payments] = await Promise.all([
       this.prisma.event.findMany({
         where: { clientId: id },
         orderBy: { startDate: 'desc' },
@@ -197,6 +197,18 @@ export class ClientsService {
           startDate: true,
           endDate: true,
           status: true,
+        },
+      }),
+      this.prisma.quote.findMany({
+        where: { clientId: id },
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          quoteNumber: true,
+          total: true,
+          status: true,
+          createdAt: true,
+          event: { select: { id: true, name: true } },
         },
       }),
       this.prisma.invoice.findMany({
@@ -226,13 +238,14 @@ export class ClientsService {
 
     return {
       events,
+      quotes,
       invoices,
       payments,
-      summary: {
+      financialSummary: {
         totalEvents: events.length,
-        totalBilled,
+        totalInvoiced: totalBilled,
         totalPaid,
-        outstandingBalance,
+        outstanding: outstandingBalance,
       },
     };
   }

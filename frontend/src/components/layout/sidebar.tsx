@@ -15,7 +15,8 @@ import {
   Wrench,
   DollarSign,
   Bell,
-  ClipboardList
+  ClipboardList,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -37,9 +38,11 @@ const navigation: NavItem[] = [
   { title: 'Clients', href: '/clients', icon: Users },
   { title: 'Quotes', href: '/quotes', icon: FileText },
   { title: 'Invoices', href: '/invoices', icon: DollarSign },
+  { title: 'Transactions', href: '/transactions', icon: ArrowLeftRight },
   { title: 'Maintenance', href: '/maintenance', icon: Wrench },
   { title: 'Action Logs', href: '/logs', icon: ClipboardList },
   { title: 'Users', href: '/users', icon: Users, adminOnly: true },
+  { title: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export function Sidebar() {

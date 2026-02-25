@@ -79,7 +79,6 @@ export class TransactionsService {
         items: {
           create: dto.items.map((item) => ({
             equipmentId: item.equipmentId,
-            quantity: item.quantity || 1,
             condition: item.condition,
             notes: item.notes,
           })),
@@ -201,13 +200,8 @@ export class TransactionsService {
         items: {
           create: dto.items.map((item) => ({
             equipmentId: item.equipmentId,
-            quantity: item.quantity || 1,
-            returnedQuantity: item.returnedQuantity || item.quantity || 1,
             condition: item.condition,
             damageNotes: item.damageNotes,
-            isShortage:
-              (item.returnedQuantity || item.quantity || 1) <
-              (item.quantity || 1),
           })),
         },
       },

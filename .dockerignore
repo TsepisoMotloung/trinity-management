@@ -1,0 +1,12 @@
+**/node_modules
+**/.next
+**/dist
+**/coverage
+**/.git
+**/.env
+**/.env.local
+**/README.md
+**/LICENSE
+**/.vscode
+**/*.log
+**/npm-debug.log*

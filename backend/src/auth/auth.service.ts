@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import * as argon2 from 'argon2';
+import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../prisma/prisma.service';
 import { ActionLogService } from '../action-log/action-log.service';
@@ -52,7 +52,7 @@ export class AuthService {
     }
 
     // Hash password
-    const passwordHash = await argon2.hash(dto.password);
+    const passwordHash = await bcrypt.hash(dto.password, 10);
 
     // Create user (not approved by default — requires admin approval)
     const user = await this.prisma.user.create({
@@ -126,9 +126,9 @@ export class AuthService {
       throw new UnauthorizedException('Your account is pending admin approval. Please wait for an administrator to approve your registration.');
     }
 
-    const isPasswordValid = await argon2.verify(
-      user.passwordHash,
+    const isPasswordValid = await bcrypt.compare(
       dto.password,
+      user.passwordHash,
     );
 
     if (!isPasswordValid) {
@@ -240,16 +240,16 @@ export class AuthService {
       throw new BadRequestException('User not found');
     }
 
-    const isPasswordValid = await argon2.verify(
-      user.passwordHash,
+    const isPasswordValid = await bcrypt.compare(
       dto.currentPassword,
+      user.passwordHash,
     );
 
     if (!isPasswordValid) {
       throw new BadRequestException('Current password is incorrect');
     }
 
-    const newPasswordHash = await argon2.hash(dto.newPassword);
+    const newPasswordHash = await bcrypt.hash(dto.newPassword, 10);
 
     await this.prisma.user.update({
       where: { id: userId },
@@ -337,7 +337,7 @@ export class AuthService {
     }
 
     // Hash new password
-    const passwordHash = await argon2.hash(dto.newPassword);
+    const passwordHash = await bcrypt.hash(dto.newPassword, 10);
 
     // Update password
     await this.prisma.user.update({

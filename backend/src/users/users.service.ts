@@ -4,7 +4,7 @@ import {
   ConflictException,
   ForbiddenException,
 } from '@nestjs/common';
-import * as argon2 from 'argon2';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { ActionLogService } from '../action-log/action-log.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
@@ -39,7 +39,7 @@ export class UsersService {
       throw new ConflictException('Email already registered');
     }
 
-    const passwordHash = await argon2.hash(dto.password);
+    const passwordHash = await bcrypt.hash(dto.password, 10);
 
     const user = await this.prisma.user.create({
       data: {
@@ -235,7 +235,7 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    const passwordHash = await argon2.hash(newPassword);
+    const passwordHash = await bcrypt.hash(newPassword, 10);
 
     await this.prisma.user.update({
       where: { id },
