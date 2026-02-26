@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand colors for splash/launch screen -->
+    <color name="colorPrimary">#6366F1</color>
+    <color name="colorPrimaryDark">#4F46E5</color>
+    <color name="colorAccent">#818CF8</color>
+    <color name="splashBackground">#FFFFFF</color>
+    <color name="ic_launcher_background">#6366F1</color>
+</resources>

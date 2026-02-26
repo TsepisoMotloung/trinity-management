@@ -17,6 +17,7 @@ import {
   Bell,
   ClipboardList,
   ArrowLeftRight,
+  BookOpen,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -42,6 +43,7 @@ const navigation: NavItem[] = [
   { title: 'Maintenance', href: '/maintenance', icon: Wrench },
   { title: 'Action Logs', href: '/logs', icon: ClipboardList },
   { title: 'Users', href: '/users', icon: Users, adminOnly: true },
+  { title: 'Training', href: '/training', icon: BookOpen },
   { title: 'Settings', href: '/settings', icon: Settings },
 ];
 
