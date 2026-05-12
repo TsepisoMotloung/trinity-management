@@ -1,0 +1,54 @@
+## GitHub Copilot Chat
+
+- Extension: 0.37.8 (prod)
+- VS Code: 1.109.5 (072586267e68ece9a47aa43f8c108e0dcbf44622)
+- OS: linux 6.6.87.2-microsoft-standard-WSL2 x64
+- Remote Name: wsl
+- Extension Kind: Workspace
+- GitHub Account: TsepisoMotloung
+
+## Network
+
+User Settings:
+```json
+  "http.systemCertificatesNode": true,
+  "github.copilot.advanced.debug.useElectronFetcher": true,
+  "github.copilot.advanced.debug.useNodeFetcher": false,
+  "github.copilot.advanced.debug.useNodeFetchFetcher": true
+```
+
+Connecting to https://api.github.com:
+- DNS ipv4 Lookup: 20.87.245.6 (204 ms)
+- DNS ipv6 Lookup: Error (27 ms): getaddrinfo ENOTFOUND api.github.com
+- Proxy URL: None (2 ms)
+- Electron fetch: Unavailable
+- Node.js https: HTTP 200 (763 ms)
+- Node.js fetch (configured): HTTP 200 (298 ms)
+
+Connecting to https://api.githubcopilot.com/_ping:
+- DNS ipv4 Lookup: 140.82.114.21 (9 ms)
+- DNS ipv6 Lookup: Error (6 ms): getaddrinfo ENOTFOUND api.githubcopilot.com
+- Proxy URL: None (1 ms)
+- Electron fetch: Unavailable
+- Node.js https: HTTP 200 (958 ms)
+- Node.js fetch (configured): HTTP 200 (292 ms)
+
+Connecting to https://copilot-proxy.githubusercontent.com/_ping:
+- DNS ipv4 Lookup: 20.199.39.224 (35 ms)
+- DNS ipv6 Lookup: Error (38 ms): getaddrinfo ENOTFOUND copilot-proxy.githubusercontent.com
+- Proxy URL: None (46 ms)
+- Electron fetch: Unavailable
+- Node.js https: HTTP 200 (914 ms)
+- Node.js fetch (configured): HTTP 200 (770 ms)
+
+Connecting to https://mobile.events.data.microsoft.com: HTTP 404 (782 ms)
+Connecting to https://dc.services.visualstudio.com: HTTP 404 (1892 ms)
+Connecting to https://copilot-telemetry.githubusercontent.com/_ping: HTTP 200 (939 ms)
+Connecting to https://copilot-telemetry.githubusercontent.com/_ping: HTTP 200 (940 ms)
+Connecting to https://default.exp-tas.com: HTTP 400 (1136 ms)
+
+Number of system certificates: 434
+
+## Documentation
+
+In corporate networks: [Troubleshooting firewall settings for GitHub Copilot](https://docs.github.com/en/copilot/troubleshooting-github-copilot/troubleshooting-firewall-settings-for-github-copilot).
