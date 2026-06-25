@@ -67,6 +67,9 @@ export default function DashboardPage() {
   const upcomingEvents = upcomingEventsData || [];
   const overdueCount = overdueCheckIns?.totalOverdue || 0;
   const pendingCount = pendingCheckIns?.totalPending || 0;
+  const pendingCheckInGroups = Array.isArray(pendingCheckIns?.byEvent) ? pendingCheckIns.byEvent : [];
+  const recentLogItems = Array.isArray(recentLogs?.items) ? recentLogs.items : [];
+  const recentPayments = Array.isArray(financeSummary?.recentPayments) ? financeSummary.recentPayments : [];
 
   return (
     <div className="space-y-6">
@@ -270,7 +273,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {pendingCheckIns?.byEvent?.slice(0, 4).map((group: any) => (
+                  {pendingCheckInGroups.slice(0, 4).map((group: any) => (
                     <div key={group.event.id} className="flex items-center justify-between p-2 rounded border">
                       <div>
                         <Link href={`/events/${group.event.id}`} className="text-sm font-medium hover:underline">{group.event.name}</Link>
@@ -302,11 +305,11 @@ export default function DashboardPage() {
           <Link href="/logs"><Button variant="outline" size="sm">View All</Button></Link>
         </CardHeader>
         <CardContent>
-          {recentLogs?.items?.length === 0 ? (
+          {recentLogItems.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-6">No recent activity.</p>
           ) : (
             <div className="space-y-3">
-              {recentLogs?.items?.slice(0, 8).map((log: any) => (
+              {recentLogItems.slice(0, 8).map((log: any) => (
                 <div key={log.id} className="flex items-center gap-3 text-sm">
                   <span className="text-xs text-muted-foreground w-32 flex-shrink-0">
                     {format(new Date(log.createdAt), 'dd MMM HH:mm')}
@@ -376,12 +379,12 @@ export default function DashboardPage() {
                 </div>
                 <span className="font-bold text-amber-700">M {Number(financeSummary?.outstandingAmount || 0).toLocaleString('en-LS', { minimumFractionDigits: 2 })}</span>
               </div>
-              {financeSummary?.recentPayments?.length > 0 && (
+              {recentPayments.length > 0 && (
                 <div>
                   <Separator className="my-3" />
                   <p className="text-sm font-medium mb-2">Recent Payments</p>
                   <div className="space-y-2">
-                    {financeSummary.recentPayments.slice(0, 4).map((p: any) => (
+                    {recentPayments.slice(0, 4).map((p: any) => (
                       <div key={p.id} className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">{p.invoice?.client?.name || 'Unknown'}</span>
                         <span className="font-medium text-green-600">+ M {Number(p.amount).toFixed(2)}</span>
