@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/auth-store';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -102,6 +102,16 @@ export default function SettingsPage() {
     });
   };
 
+  const safeFormat = (
+    value: string | Date | undefined | null,
+    pattern: string,
+    fallback = 'Unknown',
+  ) => {
+    if (!value) return fallback;
+    const date = typeof value === 'string' ? new Date(value) : value;
+    return isValid(date) ? format(date, pattern) : fallback;
+  };
+
   const handleChangePassword = (e: React.FormEvent) => {
     e.preventDefault();
     if (!passwordForm.currentPassword || !passwordForm.newPassword) {
@@ -182,14 +192,14 @@ export default function SettingsPage() {
               <p className="text-muted-foreground">Last Login</p>
               <p className="mt-1 font-medium">
                 {user.lastLoginAt
-                  ? format(new Date(user.lastLoginAt), 'MMM dd, HH:mm')
+                  ? safeFormat(user.lastLoginAt, 'MMM dd, HH:mm', 'Never')
                   : 'Never'}
               </p>
             </div>
             <div>
               <p className="text-muted-foreground">Member Since</p>
               <p className="mt-1 font-medium">
-                {format(new Date(user.createdAt), 'MMM dd, yyyy')}
+                {safeFormat(user.createdAt, 'MMM dd, yyyy', '-')}
               </p>
             </div>
           </div>
@@ -402,7 +412,7 @@ export default function SettingsPage() {
               <span className="text-muted-foreground">Last Login</span>
               <span className="font-medium">
                 {user.lastLoginAt
-                  ? format(new Date(user.lastLoginAt), 'MMM dd, yyyy HH:mm:ss')
+                  ? safeFormat(user.lastLoginAt, 'MMM dd, yyyy HH:mm:ss', 'Unknown')
                   : 'Unknown'}
               </span>
             </div>
@@ -410,7 +420,7 @@ export default function SettingsPage() {
             <div className="flex justify-between">
               <span className="text-muted-foreground">Account Created</span>
               <span className="font-medium">
-                {format(new Date(user.createdAt), 'MMM dd, yyyy')}
+                {safeFormat(user.createdAt, 'MMM dd, yyyy', '-')}
               </span>
             </div>
           </div>

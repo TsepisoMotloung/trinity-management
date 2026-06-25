@@ -176,7 +176,8 @@ export default function EquipmentPage() {
     setIsStatusOpen(true);
   };
 
-  const categories = categoriesData || [];
+  const categories = Array.isArray(categoriesData) ? categoriesData : [];
+  const equipmentItems = Array.isArray(itemsData?.items) ? itemsData.items : [];
 
   const EquipmentForm = ({ onSubmit, isPending, submitLabel }: { onSubmit: () => void; isPending: boolean; submitLabel: string }) => (
     <div className="space-y-4 py-4 max-h-[70vh] overflow-y-auto">
@@ -297,7 +298,7 @@ export default function EquipmentPage() {
         <CardContent>
           {isLoading ? (
             <div className="flex justify-center py-8"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary" /></div>
-          ) : !itemsData?.items?.length ? (
+          ) : !equipmentItems.length ? (
             <div className="text-center py-12 text-muted-foreground">
               <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>No equipment found. Add your first item to get started.</p>
@@ -314,7 +315,7 @@ export default function EquipmentPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {itemsData.items.map((item) => (
+                {equipmentItems.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>
                       <Link href={`/equipment/${item.id}`} className="font-medium hover:underline">{item.name}</Link>

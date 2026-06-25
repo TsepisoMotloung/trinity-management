@@ -64,7 +64,7 @@ export default function DashboardPage() {
   const reservedCount = equipmentStats?.totalReserved || 0;
   const damagedCount = equipmentStats?.totalDamaged || 0;
   const underRepairCount = 0; // tracked via maintenance tickets now
-  const upcomingEvents = upcomingEventsData || [];
+  const upcomingEvents = Array.isArray(upcomingEventsData) ? upcomingEventsData : [];
   const overdueCount = overdueCheckIns?.totalOverdue || 0;
   const pendingCount = pendingCheckIns?.totalPending || 0;
   const pendingCheckInGroups = Array.isArray(pendingCheckIns?.byEvent) ? pendingCheckIns.byEvent : [];
